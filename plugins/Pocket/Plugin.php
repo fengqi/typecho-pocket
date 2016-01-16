@@ -48,8 +48,8 @@ class Pocket_Plugin implements Typecho_Plugin_Interface
         $key = new Typecho_Widget_Helper_Form_Element_Text('key', NULL, NULL, _t('Consumer Key'), _t('点 <a href="https://getpocket.com/developer/apps/" target="_blank">此链接</a> 创建并应用并获得, 创建时需要选中 Retrieve 权限.'));
         $form->addInput($key->addRule('required', _t('Key 不能为空')));
 
-        $url = new Typecho_Widget_Helper_Form_Element_Text('token', NULL, NULL, _t('Access Token'), _t('获取 Access Token 需要 Consumer Key.<br/>请先填写 Consumer Key, 然后点击保存设置.<br>再次回到此界面, 点 <a href="/pocket/token" target="_blank">此链接</a> 获得 Access Token, 允许授权, 输入页面输出的内容.'));
-        $form->addInput($url);
+        $token = new Typecho_Widget_Helper_Form_Element_Text('token', NULL, NULL, _t('Access Token'), _t('获取 Access Token 需要 Consumer Key.<br/>请先填写 Consumer Key, 然后点击保存设置.<br>再次回到此界面, 点 <a href="/pocket/token" target="_blank">此链接</a> 获得 Access Token, 允许授权, 输入页面输出的内容.'));
+        $form->addInput($token);
     }
 
     /**
@@ -63,4 +63,5 @@ class Pocket_Plugin implements Typecho_Plugin_Interface
     {
         // todo
     }
+
 }
