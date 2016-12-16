@@ -2,7 +2,8 @@
 /**
  * Pocket
  *
- * @package custom
+ * @package typecho-pocket
+ * @link https://github.com/fengqi/typecho-pocket
  */
 
 $options = Typecho_Widget::widget('Widget_Options');
@@ -17,27 +18,42 @@ $prev_page = $page - 1 <= 0 ? 1 : $page - 1;
 $next_page = $page + 1;
 $offset = ($page -1) * $per;
 
-$data = [
-    'consumer_key' => $key,
-    'access_token' => $token,
-    'state' => 'all',
-    'sort' => 'newest',
-    'detailType' => 'simple',
-    'count' => $per,
-    'offset' => $offset,
-];
+$now = time();
+$cacheTime = 600;
+$content = '';
+$file = '/tmp/pocket_'.md5('_typecho_plugin_pocket_cache_page_'.$page);
+if (is_file($file)) {
+    $content = file_get_contents($file);
+    $_time = substr($content, 0, 10);
+    $content = json_decode(substr($content, 10));
 
-$ch = curl_init('https://getpocket.com/v3/get');
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HEADER, false);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-$content = curl_exec($ch);
-curl_close($ch);
-$content = json_decode($content);
+    if ($now > $_time) $content = '';
+}
+
+if (!$content) {
+    $data = [
+        'consumer_key' => $key,
+        'access_token' => $token,
+        'state' => 'all',
+        'sort' => 'newest',
+        'detailType' => 'simple',
+        'count' => $per,
+        'offset' => $offset,
+    ];
+
+    $ch = curl_init('https://getpocket.com/v3/get');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    $content = curl_exec($ch);
+    curl_close($ch);
+    $content = json_decode($content);
+}
+
 ?>
 
 <?php $this->need('header.php'); ?>
