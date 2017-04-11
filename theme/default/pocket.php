@@ -17,11 +17,12 @@ $per = 20;
 $prev_page = $page - 1 <= 0 ? 1 : $page - 1;
 $next_page = $page + 1;
 $offset = ($page -1) * $per;
+$_tag = isset($_REQUEST['tag']) ? urldecode($_REQUEST['tag']) : '';
 
 $now = time();
 $cacheTime = 600;
 $content = '';
-$file = '/tmp/pocket_'.md5('_typecho_plugin_pocket_cache_page_'.$page);
+$file = '/tmp/pocket_'.md5('_typecho_pocket_cache_'.$page.'_'.$_tag);
 if (is_file($file)) {
     $content = file_get_contents($file);
     $_time = substr($content, 0, 10);
@@ -36,10 +37,11 @@ if (!$content) {
         'access_token' => $token,
         'state' => 'all',
         'sort' => 'newest',
-        'detailType' => 'simple',
+        'detailType' => 'complete',
         'count' => $per,
         'offset' => $offset,
     ];
+    $_tag && $data['tag'] = $_tag;
 
     $ch = curl_init('https://getpocket.com/v3/get');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -51,6 +53,8 @@ if (!$content) {
     curl_setopt($ch, CURLOPT_TIMEOUT, 10);
     $content = curl_exec($ch);
     curl_close($ch);
+
+    file_put_contents($file, ($now + $cacheTime).$content);
     $content = json_decode($content);
 }
 
@@ -73,6 +77,9 @@ if (!$content) {
 
         <ul class="post-meta">
             <li>时间: <time datetime="<?php echo date('Y-m-d H:i:s', $item->time_added) ?>" itemprop="datePublished"><?php echo date('Y-m-d H:i:s', $item->time_added) ?></time></li>
+            <?php if (isset($item->tags)): ?>
+            <li>标签:<?php foreach ($item->tags as $tag): ?><a href="?tag=<?php echo $tag->tag; ?>"><?php echo $tag->tag; ?></a>&nbsp<?php endforeach; ?></li>
+            <?php endif; ?>
         </ul>
 
         <div class="post-content" itemprop="articleBody">
@@ -82,8 +89,8 @@ if (!$content) {
     <?php endforeach; ?>
 
     <ol class="page-navigator">
-        <li class="prev"><a href="?page=<?php echo $prev_page ?>">« 前一页</a></li>
-        <li class="next"><a href="?page=<?php echo $next_page ?>">后一页 »</a></li>
+        <li class="prev"><a href="?tag=<?php echo $_tag;?>&page=<?php echo $prev_page ?>">« 前一页</a></li>
+        <li class="next"><a href="?tag=<?php echo $_tag;?>&page=<?php echo $next_page ?>">后一页 »</a></li>
     </ol>
 
     <?php $this->need('comments.php'); ?>
