@@ -78,7 +78,7 @@ if (!$content) {
         <ul class="post-meta">
             <li>时间: <time datetime="<?php echo date('Y-m-d H:i:s', $item->time_added) ?>" itemprop="datePublished"><?php echo date('Y-m-d H:i:s', $item->time_added) ?></time></li>
             <?php if (isset($item->tags)): ?>
-            <li>标签:<?php foreach ($item->tags as $tag): ?><a href="<?php $this->permalink() ?>?tag=<?php echo $tag->tag; ?>"><?php echo $tag->tag; ?></a>&nbsp<?php endforeach; ?></li>
+            <li>标签: <?php foreach ($item->tags as $tag): ?><a href="<?php $this->permalink() ?>?tag=<?php echo $tag->tag; ?>"><?php echo $tag->tag; ?></a>&nbsp<?php endforeach; ?></li>
             <?php endif; ?>
         </ul>
 
