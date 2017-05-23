@@ -72,13 +72,13 @@ if (!$content) {
     <?php foreach($content->list as $item): ?>
     <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
         <h2 class="post-title" itemprop="name headline">
-            <a itemtype="url" href="<?php echo $item->resolved_url ?>" target="_blank"><?php echo $item->resolved_title ?></a>
+            <a rel="nofollow" itemtype="url" href="<?php echo $item->resolved_url ?>" target="_blank"><?php echo $item->resolved_title ?></a>
         </h2>
 
         <ul class="post-meta">
             <li>时间: <time datetime="<?php echo date('Y-m-d H:i:s', $item->time_added) ?>" itemprop="datePublished"><?php echo date('Y-m-d H:i:s', $item->time_added) ?></time></li>
             <?php if (isset($item->tags)): ?>
-            <li>标签:<?php foreach ($item->tags as $tag): ?><a href="?tag=<?php echo $tag->tag; ?>"><?php echo $tag->tag; ?></a>&nbsp<?php endforeach; ?></li>
+            <li>标签:<?php foreach ($item->tags as $tag): ?><a href="<?php $this->permalink() ?>?tag=<?php echo $tag->tag; ?>"><?php echo $tag->tag; ?></a>&nbsp<?php endforeach; ?></li>
             <?php endif; ?>
         </ul>
 
@@ -89,8 +89,8 @@ if (!$content) {
     <?php endforeach; ?>
 
     <ol class="page-navigator">
-        <li class="prev"><a href="?tag=<?php echo $_tag;?>&page=<?php echo $prev_page ?>">« 前一页</a></li>
-        <li class="next"><a href="?tag=<?php echo $_tag;?>&page=<?php echo $next_page ?>">后一页 »</a></li>
+        <li class="prev"><a href="<?php $this->permalink() ?>?tag=<?php echo $_tag;?>&page=<?php echo $prev_page ?>">« 前一页</a></li>
+        <li class="next"><a href="<?php $this->permalink() ?>?tag=<?php echo $_tag;?>&page=<?php echo $next_page ?>">后一页 »</a></li>
     </ol>
 
     <?php $this->need('comments.php'); ?>
