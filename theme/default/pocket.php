@@ -72,7 +72,7 @@ if (!$content) {
     <?php foreach($content->list as $item): ?>
     <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
         <h2 class="post-title" itemprop="name headline">
-            <a rel="nofollow" itemtype="url" href="<?php echo $item->resolved_url ?>" target="_blank"><?php echo $item->resolved_title ?></a>
+            <a rel="nofollow" itemtype="url" href="<?php echo $item->resolved_url ?>" target="_blank"><?php echo $item->resolved_title ? $item->resolved_title : $item->resolved_url ?></a>
         </h2>
 
         <ul class="post-meta">
@@ -90,7 +90,11 @@ if (!$content) {
 
     <ol class="page-navigator">
         <li class="prev"><a href="<?php $this->permalink() ?>?tag=<?php echo $_tag;?>&page=<?php echo $prev_page ?>">« 前一页</a></li>
+        <?php if($content && $content->status != 2 && $content->list): ?>
         <li class="next"><a href="<?php $this->permalink() ?>?tag=<?php echo $_tag;?>&page=<?php echo $next_page ?>">后一页 »</a></li>
+        <?php else: ?>
+        <li class="next">后一页 »</li>
+        <?php endif; ?>
     </ol>
 
     <?php $this->need('comments.php'); ?>
