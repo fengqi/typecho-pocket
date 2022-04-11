@@ -2,7 +2,7 @@
 /**
  * Pocket
  *
- * @package typecho-pocket
+ * @package custom
  * @link https://github.com/fengqi/typecho-pocket
  */
 
